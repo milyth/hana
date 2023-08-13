@@ -3,8 +3,10 @@ mod lua;
 use anyhow::{Context, Result};
 use argh::FromArgs;
 use lua::Setup;
+use mlua::Lua;
 use std::fs::read;
 use tracing_subscriber::EnvFilter;
+mod hana;
 
 #[derive(FromArgs)]
 /// Declare your system
@@ -13,7 +15,7 @@ struct Cli {
     /// the source configuration
     source: PathBuf,
 
-    #[argh(option, short = 'R')]
+    #[argh(option, short = 'r')]
     /// the os root
     root: PathBuf,
 }
@@ -32,7 +34,8 @@ fn main() -> Result<()> {
         root: cli.root.canonicalize().context("invalid root directory")?,
     };
 
-    let lua = lua::init(&config).context("unable to load lua integration")?;
+    let lua = Lua::new();
+    hana::init(&lua, &config).context("unable to load Hana integration")?;
     let init_path = cli.source.canonicalize()?.join("init.lua");
     let contents = read(&init_path).context("failed to read init.lua")?;
 

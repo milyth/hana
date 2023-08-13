@@ -1,3 +1,8 @@
 {
-    "workspace.library": ["../lib"]
+    "workspace.library": [
+        "../lib"
+    ],
+    "diagnostics.disable": [
+        "lowercase-global"
+    ]
 }

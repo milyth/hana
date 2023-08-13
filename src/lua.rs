@@ -1,7 +1,6 @@
 use anyhow::{Context, Result};
 use std::fs::{create_dir_all, write};
 use std::path::PathBuf;
-pub mod etc;
 
 pub struct FileSystem<'fs> {
     root: &'fs PathBuf,
@@ -37,4 +36,19 @@ impl<'fs> FileSystem<'fs> {
             )
         })
     }
+}
+
+#[macro_export]
+macro_rules! map_function {
+    ($setup:ident, $fn:ident) => {{
+        let setup = $setup.clone();
+        move |lua, arg| {
+            $fn(&lua, &setup, arg).map_err(move |e| mlua::Error::RuntimeError(format!("{e:?}")))
+        }
+    }};
+}
+
+#[derive(Clone)]
+pub struct Setup {
+    pub root: PathBuf,
 }
