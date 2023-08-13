@@ -1,0 +1,3 @@
+etc {
+	hostname = 'testhostname',
+}
