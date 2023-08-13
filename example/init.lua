@@ -1,19 +1,7 @@
----@class SystemdConfig
-SystemdConfig = {
-	---@type { [string]: table }
-	zramGenerator = {},
-}
-
----@param custom SystemdConfig
----@return nil
-function systemd(custom)
-	Hana.makeDirAll('etc/systemd')
-	local zram = custom.zramGenerator
-
-	if zram ~= nil then
-		Hana.writeFile('etc/systemd/zram-generator.conf', Hana.toIni(zram))
-	end
-end
+require('lib.systemd')
+require('lib.etc')
+require('lib.networking')
+require('lib.users')
 
 systemd {
 	zramGenerator = {
@@ -22,5 +10,51 @@ systemd {
 			['compression-algorithm'] = 'lz4',
 			['swap-priority'] = 999,
 		},
+	},
+}
+
+etc {
+	hostName = 'testMachine',
+}
+
+networking {
+	networkManager = {
+		main = {
+			['rc-manager'] = 'resolveconf',
+		},
+
+		device = {
+			wifi = {
+				backend = 'iwd',
+			},
+		},
+	},
+
+	resolvconf = {
+		name_servers = '127.0.0.1 ::1',
+		resolve_conf_options = 'edns0 single-request-reopen trust-ad',
+	},
+
+	iwd = {
+		General = {
+			AddressRandomization = 'network',
+			EnableNetworkConfiguration = true,
+		},
+
+		Network = {
+			EnableNetworkConfiguration = true,
+		},
+
+		Scan = {
+			DisablePeriodicScan = true,
+		},
+	},
+}
+
+users {
+	root = {
+		groups = { 'wheel', 'test' },
+		homeDir = '/home/test',
+		shell = '/usr/bin/bash',
 	},
 }

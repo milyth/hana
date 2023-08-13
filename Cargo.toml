@@ -8,7 +8,8 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.72"
 argh = "0.1.12"
-mlua = { version = "0.8.9", features = ["async", "luajit", "serialize"] }
+mlua = { version = "0.8.9", features = ["luajit", "serialize"] }
+nix = "0.26.2"
 serde_ini = "0.2.0"
 toml = "0.7.6"
 tracing = "0.1.37"

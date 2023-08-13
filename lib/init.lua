@@ -25,4 +25,15 @@ Hana = {
 	---@return string
 	-- Converts a table into a Ini string
 	toIni = function(table) end,
+
+	---@type function
+	---@param name string
+	---@return table?
+	getUserByName = function(name) end,
+
+	---@type function
+	---@param assertion boolean
+	---@param why string
+	---@return nil
+	assert = function(assertion, why) end,
 }
